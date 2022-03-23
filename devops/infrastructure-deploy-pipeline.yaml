@@ -51,7 +51,8 @@ stages:
               commandOptions: "-out=$(System.DefaultWorkingDirectory)/terraform.tfplan -detailed-exitcode"
 
           - script: echo "##vso[task.setvariable variable=terraformChangesStaged;isOutput=true]$(TERRAFORM_PLAN_HAS_CHANGES)"
-          - script: echo $(terraformChangesStaged)
+          - script: echo "##vso[task.setvariable variable=terraformChangesStaged1]$(TERRAFORM_PLAN_HAS_CHANGES)"
+          - script: echo "$(terraformChangesStaged1)"
 
   - stage: APPLY_AND_PROVISION
     displayName: Run Terraform Apply and provision resources
