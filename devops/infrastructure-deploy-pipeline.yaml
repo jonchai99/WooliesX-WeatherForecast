@@ -25,7 +25,7 @@ stages:
           displayName: Run Terraform Init
           inputs:
             command: init
-            workingDirectory: $(Build.StagingDirectory)
+            workingDirectory: $(Agent.BuildDirectory)/infrastructure
             backendType: gcs
             # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
             backendGcsCredentials: wooliesx-interview-tf-state.json
@@ -38,7 +38,7 @@ stages:
           displayName: Run Terraform Plan
           inputs:
             command: plan
-            workingDirectory: $(Build.StagingDirectory)
+            workingDirectory: $(Agent.BuildDirectory)/infrastructure
             # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
             providerGoogleCredentials: wooliesx-interview-tf.json
             # The default project name where resources are managed. Defining project on a resource takes precedence over this.
