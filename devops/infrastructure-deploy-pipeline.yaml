@@ -20,33 +20,69 @@ stages:
       - job: TERRAFORM_PLAN
         displayName: Plan Terraform resources
         steps:
-        - task: TerraformInstaller@0
-          displayName: Install latest Terraform version
-          inputs:
-            terraformVersion: latest
-        - task: TerraformCLI@0
-          displayName: Run Terraform Init
-          inputs:
-            command: init
-            workingDirectory: ./infrastructure
-            backendType: gcs
-            # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-            backendGcsCredentials: wooliesx-interview-tf-state.json
-            # GCS bucket name
-            backendGcsBucket: tf-state62626
-            # GCS Bucket path to state file
-            backendGcsPrefix: terraform/state
+          - task: TerraformInstaller@0
+            displayName: Install latest Terraform version
+            inputs:
+              terraformVersion: latest
+          - task: TerraformCLI@0
+            displayName: Run Terraform Init
+            inputs:
+              command: init
+              workingDirectory: ./infrastructure
+              backendType: gcs
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+              backendGcsCredentials: wooliesx-interview-tf-state.json
+              # GCS bucket name
+              backendGcsBucket: tf-state62626
+              # GCS Bucket path to state file
+              backendGcsPrefix: terraform/state
 
-        - task: TerraformCLI@0
-          displayName: Run Terraform Plan
-          inputs:
-            command: plan
-            workingDirectory: ./infrastructure
-            # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-            providerGoogleCredentials: wooliesx-interview-tf.json
-            # The default project name where resources are managed. Defining project on a resource takes precedence over this.
-            providerGoogleProject: wooliesx-interview
-            # The default region where resources are managed. Defining region on a resource takes precedence over this.
-            providerGoogleRegion: australia-southeast1
-            publishPlanResults: Terraform Plan Output
-            commandOptions: '-out=$(System.DefaultWorkingDirectory)/terraform.tfplan -detailed-exitcode'
+          - task: TerraformCLI@0
+            displayName: Run Terraform Plan
+            inputs:
+              command: plan
+              workingDirectory: ./infrastructure
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+              providerGoogleCredentials: wooliesx-interview-tf.json
+              # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+              providerGoogleProject: wooliesx-interview
+              # The default region where resources are managed. Defining region on a resource takes precedence over this.
+              providerGoogleRegion: australia-southeast1
+              publishPlanResults: Terraform Plan
+              commandOptions: "-out=$(System.DefaultWorkingDirectory)/terraform.tfplan -detailed-exitcode"
+
+  - stage: APPLY_AND_PROVISION
+    display: Run Terraform Apply and provision resources
+    condition: and(succeeded(), eq(variables['TERRAFORM_PLAN_HAS_CHANGES'], 'true'))
+    jobs:
+      - job: TERRAFORM_APPLY
+        displayName: Apply Terraform resources
+        steps:
+          - task: TerraformInstaller@0
+            displayName: Install latest Terraform version
+            inputs:
+              terraformVersion: latest
+          - task: TerraformCLI@0
+            displayName: Run Terraform Init
+            inputs:
+              command: init
+              workingDirectory: ./infrastructure
+              backendType: gcs
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+              backendGcsCredentials: wooliesx-interview-tf-state.json
+              # GCS bucket name
+              backendGcsBucket: tf-state62626
+              # GCS Bucket path to state file
+              backendGcsPrefix: terraform/state
+          - task: TerraformCLI@0
+            displayName: 'terraform apply'
+            inputs:
+              command: apply
+              workingDirectory: ./infrastructure
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+              providerGoogleCredentials: wooliesx-interview-tf.json
+              # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+              providerGoogleProject: wooliesx-interview
+              # The default region where resources are managed. Defining region on a resource takes precedence over this.
+              providerGoogleRegion: australia-southeast1
+              commandOptions: '$(System.DefaultWorkingDirectory)/terraform.tfplan'              
