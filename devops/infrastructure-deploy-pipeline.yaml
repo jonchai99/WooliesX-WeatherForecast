@@ -36,7 +36,6 @@ stages:
               backendGcsBucket: tf-state62626
               # GCS Bucket path to state file
               backendGcsPrefix: terraform/state
-
           - task: TerraformCLI@0
             displayName: Run Terraform Plan
             inputs:
@@ -50,6 +49,9 @@ stages:
               providerGoogleRegion: australia-southeast1
               publishPlanResults: Terraform Plan
               commandOptions: "-out=$(System.DefaultWorkingDirectory)/terraform.tfplan -detailed-exitcode"
+
+          - script: 'echo "##vso[task.setvariable variable=terraformChangesStaged;isOutput=true]$(TERRAFORM_PLAN_HAS_CHANGES)"'
+          - script: 'echo $(terraformChangesStaged)'
 
   - stage: APPLY_AND_PROVISION
     displayName: Run Terraform Apply and provision resources
