@@ -1,3 +1,8 @@
+resource "google_project_service" "cloud_resource_manager_api" {
+  project       = var.gcp_project_id
+  service       = "cloudresourcemanager.googleapis.com"
+}
+
 resource "google_project_service" "artifact_registry_api" {
   project       = var.gcp_project_id
   service       = "artifactregistry.googleapis.com"
@@ -23,7 +28,8 @@ resource "time_sleep" "wait_180_seconds" {
     google_project_service.artifact_registry_api,
     google_project_service.secret_manager_api,
     google_project_service.cloud_run_api,
-    google_project_service.compute_api
+    google_project_service.compute_api,
+    google_project_service.cloud_resource_manager_api
   ]
 
   create_duration = "180s"
