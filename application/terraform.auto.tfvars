@@ -1,0 +1,6 @@
+gcp_project_id            = "wooliesx-interview"
+gcp_region                = "australia-southeast1"
+cloud_run_image_name      = "weather-forecast-api"
+cloud_run_image_tag       = "247904"
+cloud_run_api_key_secret  = "weather-forecast-api-key"
+repository_id             = "wooliesx-interview-repo"
