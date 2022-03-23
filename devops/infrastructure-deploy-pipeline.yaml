@@ -10,6 +10,9 @@ trigger:
     include:
       - infrastructure
 
+pool:
+  name: Default
+
 stages:
   - stage: PLAN_AND_PUBLISH
     displayName: Run Terraform Plan and publish
