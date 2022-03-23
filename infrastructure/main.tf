@@ -38,6 +38,10 @@ resource "time_sleep" "wait_180_seconds" {
     google_project_service.iam_api
   ]
 
+  triggers = {
+    always_run = "${timestamp()}"
+  }  
+
   create_duration = "180s"
 }
 
