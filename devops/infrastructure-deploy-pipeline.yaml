@@ -48,5 +48,5 @@ stages:
             providerGoogleProject: wooliesx-interview
             # The default region where resources are managed. Defining region on a resource takes precedence over this.
             providerGoogleRegion: australia-southeast1
-            publishPlanResults: tf-plan-log
+            publishPlanResults: Terraform Plan Output
             commandOptions: '-out=$(System.DefaultWorkingDirectory)/terraform.tfplan -detailed-exitcode'
