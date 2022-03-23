@@ -13,11 +13,17 @@ resource "google_project_service" "cloud_run_api" {
   service       = "run.googleapis.com"
 }
 
+resource "google_project_service" "compute_api" {
+  project       = var.gcp_project_id
+  service       = "compute.googleapis.com"
+}
+
 resource "time_sleep" "wait_180_seconds" {
   depends_on = [
     google_project_service.artifact_registry_api,
     google_project_service.secret_manager_api,
-    google_project_service.cloud_run_api
+    google_project_service.cloud_run_api,
+    google_project_service.compute_api
   ]
 
   create_duration = "180s"
@@ -37,7 +43,7 @@ resource "google_artifact_registry_repository" "repository" {
 
 resource "google_service_account" "pipeline_gar" {
   account_id   = "pipeline-gar"
-  display_name = "Pipeline Service Account"
+  display_name = "Pipeline Service Account for GAR"
   description  = "Used by pipeline to push images into GAR registry."
   project      = var.gcp_project_id
 }
@@ -61,6 +67,7 @@ resource "google_project_iam_member" "compute_sa_secret_rd" {
 
   depends_on = [
     google_project_service.cloud_run_api,
+    google_project_service.compute_api,
     time_sleep.wait_180_seconds
   ]
 }

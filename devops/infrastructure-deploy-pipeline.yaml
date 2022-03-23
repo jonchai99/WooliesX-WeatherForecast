@@ -1,0 +1,35 @@
+#################################################
+# Triggers
+#################################################
+pr: none
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - infrastructure
+
+stages:
+  - stage: PLAN_AND_PUBLISH
+    displayName: Run Terraform Plan and publish
+    jobs:
+      - job: TERRAFORM_PLAN
+        displayName: Run Terraform Plan
+        steps:
+        - task: TerraformInstaller
+          displayName: Install Terraform
+          inputs:
+            terraformVersion: latest
+        - task: TerraformCLI@0
+          displayName: 'terraform init'
+          inputs:
+            command: init
+            workingDirectory: $(Build.StagingDirectory)
+            backendType: gcs
+            # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+            backendGcsCredentials: wooliesx-interview-80a8ec58bc65.json
+            # GCS bucket name
+            backendGcsBucket: tf-state62626
+            # GCS Bucket path to state file
+            backendGcsPrefix: 'terraform/state'

@@ -44,13 +44,13 @@ resource "google_cloud_run_service" "cloud_run" {
 }
 
 ############################################
-#     Make Cloud Run publicly accessible
+# Make Cloud Run publicly accessible
 ############################################
 resource "google_cloud_run_service_iam_binding" "binding" {
-  project        = google_cloud_run_service.cloud_run.project
-  location       = google_cloud_run_service.cloud_run.location
-  service        = google_cloud_run_service.cloud_run.name
-  role           = "roles/run.invoker"
+  project  = google_cloud_run_service.cloud_run.project
+  location = google_cloud_run_service.cloud_run.location
+  service  = google_cloud_run_service.cloud_run.name
+  role     = "roles/run.invoker"
   members = [
     "allUsers",
   ]
