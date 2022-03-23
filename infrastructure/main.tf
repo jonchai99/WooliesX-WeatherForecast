@@ -35,7 +35,7 @@ resource "time_sleep" "wait_180_seconds" {
     google_project_service.cloud_run_api,
     google_project_service.compute_api,
     google_project_service.cloud_resource_manager_api,
-    google_project.iam_api
+    google_project_service.iam_api
   ]
 
   create_duration = "180s"
