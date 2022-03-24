@@ -133,3 +133,51 @@ stages:
             env:
               CLOUD_RUN_URL: $(cloudRunUrl)
             displayName: Perform health check
+
+  - stage: DEPLOY_ENV_PROD
+    displayName: Run Terraform Apply and provision resources
+    dependsOn: DEPLOY_ENV_DEV
+    jobs:
+      - job: TERRAFORM_APPLY
+        variables:
+          - name: environment
+            value: prod
+        displayName: Apply Terraform resources
+        steps:
+          - task: TerraformInstaller@0
+            displayName: Install latest Terraform version
+            inputs:
+              terraformVersion: latest
+          - task: TerraformCLI@0
+            displayName: Run Terraform Init
+            inputs:
+              command: init
+              workingDirectory: $(workingDirectory)
+              backendType: gcs
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+              backendGcsCredentials: wooliesx-interview-tf-state.json
+              # GCS bucket name
+              backendGcsBucket: $(backendGcsBucket)
+              # GCS Bucket path to state file
+              backendGcsPrefix: $(backendGcsPrefix)
+          - task: TerraformCLI@0
+            displayName: Select workspace - $(environment)
+            inputs:
+              workingDirectory: $(workingDirectory)
+              command: workspace
+              workspaceSubCommand: select
+              workspaceName: $(environment)
+          - powershell: Add-Content "$(Build.SourcesDirectory)/application/services/terraform-$(environment).tfvars" "`ncloud_run_image_tag = `"${{ parameters.imageTag }}`""
+            displayName: Update image tag
+          - task: TerraformCLI@0
+            displayName: Run Terraform Apply
+            inputs:
+              command: apply
+              workingDirectory: $(workingDirectory)
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+              providerGoogleCredentials: wooliesx-interview-tf.json
+              # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+              providerGoogleProject: wooliesx-interview
+              # The default region where resources are managed. Defining region on a resource takes precedence over this.
+              providerGoogleRegion: australia-southeast1
+              commandOptions: "-auto-approve -var-file=./services/terraform-$(environment).tfvars"
