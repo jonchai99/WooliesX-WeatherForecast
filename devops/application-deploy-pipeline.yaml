@@ -83,8 +83,15 @@ stages:
               # GCS bucket name
               backendGcsBucket: $(backendGcsBucket)
               # GCS Bucket path to state file
-              backendGcsPrefix: $(backendGcsPrefix)/$(environment)
-          - powershell: Add-Content "$(Build.SourcesDirectory)/application/services/terraform-dev.tfvars" "`ncloud_run_image_tag = `"${{ parameters.imageTag }}`""
+              backendGcsPrefix: $(backendGcsPrefix)
+          - task: TerraformCLI@0
+            displayName: Select workspace dev
+            inputs:
+              workingDirectory: $(workingDirectory)
+              command: workspace
+              workspaceSubCommand: select
+              workspaceName: $(environment)              
+          - powershell: Add-Content "$(Build.SourcesDirectory)/application/services/terraform-$(environment).tfvars" "`ncloud_run_image_tag = `"${{ parameters.imageTag }}`""
             displayName: Update image tag
           - task: TerraformCLI@0
             displayName: Run Terraform Apply
@@ -97,4 +104,4 @@ stages:
               providerGoogleProject: wooliesx-interview
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: australia-southeast1
-              commandOptions: "-auto-approve"
+              commandOptions: "-auto-approve -var-file=./services/terraform-$(environment).tfvars"
