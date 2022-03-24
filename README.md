@@ -1,6 +1,8 @@
 # WooliesX-WeatherForecast
 This project handles 3 different areas of work, [devops](./devops), [infrastructure](./infrastructure) and [application](./application). The end result is to deploy an image to Google Cloud Run, currently built and published to Docker Hub which can be found [here](https://hub.docker.com/r/dfranciswoolies/ciarecruitment-bestapiever). Due to restrictions within Cloud Run, only image on Google Container Registry or Google Artifact Registry can be deployed. To tackle this, within the application deployment pipeline, image is pulled from Docker Hub, retagged before subsequently making its way to Artifact Registry.
 
+Access to the app can be found [here](https://wooliesx-interview-cr-prod-7vj7ecneuq-ts.a.run.app/weatherforecast)
+
 ## DevOps
 Consists of 2 pipeline yaml files, one for Infrastructure deployment and the other for Application. Both pipelines execute on Azure DevOps.
 
