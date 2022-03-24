@@ -105,3 +105,12 @@ stages:
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: australia-southeast1
               commandOptions: "-auto-approve -var-file=./services/terraform-$(environment).tfvars"
+          - task: TerraformCLI@0
+            displayName: 'Run Terraform Output'
+            inputs:
+              command: output
+              workingDirectory: $(workingDirectory)
+          - script: echo "##vso[task.setvariable variable=cloudRunUrl]'$(TF_OUT_service_url)'"
+            displayName: Set Cloud Run public URL
+            name: setvar
+          - script: echo $(cloudRunUrl)
