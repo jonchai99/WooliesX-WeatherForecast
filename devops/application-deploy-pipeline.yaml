@@ -116,11 +116,13 @@ stages:
           - powershell: |
               try
               {
-                Invoke-WebRequest -Uri $(cloudRunUrl)/health
+                Invoke-WebRequest -Uri $env:CLOUD_RUN_URL/health
               }
               catch
               {
                 Write-Host "Health check failed"
                 exit 1
               }
+            env:
+              CLOUD_RUN_URL: $(cloudRunUrl)
             displayName: Perform health check
