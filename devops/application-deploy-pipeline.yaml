@@ -84,7 +84,7 @@ stages:
               backendGcsBucket: $(backendGcsBucket)
               # GCS Bucket path to state file
               backendGcsPrefix: $(backendGcsPrefix)/$(environment)
-          - powershell: Add-Content "$(Build.SourcesDirectory)/services/terraform-dev.tfvars" "`ncloud_run_image_tag = `"${{ parameters.imageTag }}`""
+          - powershell: Add-Content "$(Build.SourcesDirectory)/application/services/terraform-dev.tfvars" "`ncloud_run_image_tag = `"${{ parameters.imageTag }}`""
             displayName: Update image tag
           - task: TerraformCLI@0
             displayName: Run Terraform Apply
