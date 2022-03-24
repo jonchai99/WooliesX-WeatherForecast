@@ -13,6 +13,13 @@ trigger:
 pool:
   name: Default
 
+variables:
+  - name: backendGcsBucket
+    value: tf-state62626
+
+  - name: backendGcsPrefix
+    value: terraform/state
+
 stages:
   - stage: PLAN_AND_PUBLISH
     displayName: Run Terraform Plan and publish
@@ -33,9 +40,9 @@ stages:
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               backendGcsCredentials: wooliesx-interview-tf-state.json
               # GCS bucket name
-              backendGcsBucket: tf-state62626
+              backendGcsBucket: $(backendGcsBucket)
               # GCS Bucket path to state file
-              backendGcsPrefix: terraform/state
+              backendGcsPrefix: $(backendGcsPrefix)
           - task: TerraformCLI@0
             displayName: Run Terraform Plan
             inputs:
@@ -52,10 +59,9 @@ stages:
           - script: echo "##vso[task.setvariable variable=terraformChangesStaged;isOutput=true]'$(TERRAFORM_PLAN_HAS_CHANGES)'"
             displayName: Set state change variable
             name: printvar
-          - publish: '$(Build.ArtifactStagingDirectory)/terraform.tfplan'
-            displayName: 'Publish tfplan file for later use'
+          - publish: "$(Build.ArtifactStagingDirectory)/terraform.tfplan"
+            displayName: "Publish tfplan file for later use"
             artifact: drop
-
 
   - stage: APPLY_AND_PROVISION
     displayName: Run Terraform Apply and provision resources
@@ -80,9 +86,9 @@ stages:
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               backendGcsCredentials: wooliesx-interview-tf-state.json
               # GCS bucket name
-              backendGcsBucket: tf-state62626
+              backendGcsBucket: $(backendGcsBucket)
               # GCS Bucket path to state file
-              backendGcsPrefix: terraform/state
+              backendGcsPrefix: $(backendGcsPrefix)
           - task: TerraformCLI@0
             displayName: Run Terraform Apply
             inputs:
