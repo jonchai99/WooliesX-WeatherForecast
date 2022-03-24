@@ -23,11 +23,6 @@ resource "google_project_service" "cloud_run_api" {
   service       = "run.googleapis.com"
 }
 
-resource "google_project_service" "service_usage_api" {
-  project       = var.gcp_project_id
-  service       = "serviceusage.googleapis.com"
-}
-
 resource "google_project_service" "compute_api" {
   project       = var.gcp_project_id
   service       = "compute.googleapis.com"
@@ -40,8 +35,7 @@ resource "time_sleep" "wait_180_seconds" {
     google_project_service.cloud_run_api,
     google_project_service.compute_api,
     google_project_service.cloud_resource_manager_api,
-    google_project_service.iam_api,
-    google_project_service.service_usage_api
+    google_project_service.iam_api
   ]
 
   create_duration = "180s"
