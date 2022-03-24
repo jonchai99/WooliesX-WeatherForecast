@@ -113,4 +113,14 @@ stages:
           - script: echo "##vso[task.setvariable variable=cloudRunUrl]'$(TF_OUT_service_url)'"
             displayName: Set Cloud Run public URL
             name: setvar
-          - script: echo $(cloudRunUrl)
+          - powershell: |
+              try
+              {
+                Invoke-WebRequest -Uri $(cloudRunUrl)/health
+              }
+              catch
+              {
+                Write-Host "Health check failed"
+                exit 1
+              }
+            displayName: Perform health check
