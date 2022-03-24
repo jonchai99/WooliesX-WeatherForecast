@@ -55,7 +55,7 @@ stages:
 
   - stage: APPLY_AND_PROVISION
     displayName: Run Terraform Apply and provision resources
-    # condition: and(succeeded(), eq(stageDependencies.PLAN_AND_PUBLISH.TERRAFORM_PLAN.outputs['terraformChangesStaged'], 'true'))
+    condition: and(succeeded(), eq(dependencies.PLAN_AND_PUBLISH.outputs['TERRAFORM_PLAN.terraformChangesStaged'], 'true'))
     dependsOn: PLAN_AND_PUBLISH
     jobs:
       - job: TERRAFORM_APPLY
@@ -77,16 +77,15 @@ stages:
               backendGcsBucket: tf-state62626
               # GCS Bucket path to state file
               backendGcsPrefix: terraform/state
-          - script: echo $(stageDependencies.PLAN_AND_PUBLISH.TERRAFORM_PLAN.outputs['terraformChangesStaged'])
-          # - task: TerraformCLI@0
-          #   displayName: 'terraform apply'
-          #   inputs:
-          #     command: apply
-          #     workingDirectory: ./infrastructure
-          #     # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-          #     providerGoogleCredentials: wooliesx-interview-tf.json
-          #     # The default project name where resources are managed. Defining project on a resource takes precedence over this.
-          #     providerGoogleProject: wooliesx-interview
-          #     # The default region where resources are managed. Defining region on a resource takes precedence over this.
-          #     providerGoogleRegion: australia-southeast1
-          #     commandOptions: '$(System.DefaultWorkingDirectory)/terraform.tfplan'              
+          - task: TerraformCLI@0
+            displayName: 'terraform apply'
+            inputs:
+              command: apply
+              workingDirectory: ./infrastructure
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+              providerGoogleCredentials: wooliesx-interview-tf.json
+              # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+              providerGoogleProject: wooliesx-interview
+              # The default region where resources are managed. Defining region on a resource takes precedence over this.
+              providerGoogleRegion: australia-southeast1
+              commandOptions: '$(System.DefaultWorkingDirectory)/terraform.tfplan'              
