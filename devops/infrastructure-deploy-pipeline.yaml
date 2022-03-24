@@ -55,7 +55,7 @@ stages:
 
   - stage: APPLY_AND_PROVISION
     displayName: Run Terraform Apply and provision resources
-    condition: eq(dependencies.PLAN_AND_PUBLISH.outputs['TERRAFORM_PLAN.printvar.terraformChangesStaged'], 'true')
+    condition: eq(stageDependencies.PLAN_AND_PUBLISH.TERRAFORM_PLAN.outputs['printvar.terraformChangesStaged'], 'true')
     dependsOn: PLAN_AND_PUBLISH
     jobs:
       - job: TERRAFORM_APPLY
