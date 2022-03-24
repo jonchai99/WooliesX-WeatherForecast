@@ -20,6 +20,9 @@ variables:
   - name: backendGcsPrefix
     value: terraform/state
 
+  - name: workingDirectory
+    value: ./infrastructure
+
 stages:
   - stage: PLAN_AND_PUBLISH
     displayName: Run Terraform Plan and publish
@@ -35,7 +38,7 @@ stages:
             displayName: Run Terraform Init
             inputs:
               command: init
-              workingDirectory: ./infrastructure
+              workingDirectory: $(workingDirectory)
               backendType: gcs
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               backendGcsCredentials: wooliesx-interview-tf-state.json
@@ -47,7 +50,7 @@ stages:
             displayName: Run Terraform Plan
             inputs:
               command: plan
-              workingDirectory: ./infrastructure
+              workingDirectory: $(workingDirectory)
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               providerGoogleCredentials: wooliesx-interview-tf.json
               # The default project name where resources are managed. Defining project on a resource takes precedence over this.
@@ -81,7 +84,7 @@ stages:
             displayName: Run Terraform Init
             inputs:
               command: init
-              workingDirectory: ./infrastructure
+              workingDirectory: $(workingDirectory)
               backendType: gcs
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               backendGcsCredentials: wooliesx-interview-tf-state.json
@@ -93,7 +96,7 @@ stages:
             displayName: Run Terraform Apply
             inputs:
               command: apply
-              workingDirectory: ./infrastructure
+              workingDirectory: $(workingDirectory)
               # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
               providerGoogleCredentials: wooliesx-interview-tf.json
               # The default project name where resources are managed. Defining project on a resource takes precedence over this.
