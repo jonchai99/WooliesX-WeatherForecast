@@ -37,7 +37,6 @@ stages:
               # GCS Bucket path to state file
               backendGcsPrefix: terraform/state
           - task: TerraformCLI@0
-            name: plan
             displayName: Run Terraform Plan
             inputs:
               workingDirectory: ./infrastructure
