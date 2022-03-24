@@ -54,4 +54,8 @@ resource "google_cloud_run_service_iam_binding" "binding" {
   members = [
     "allUsers",
   ]
+
+  depends_on = [
+    google_cloud_run_service.cloud_run
+  ]
 }
