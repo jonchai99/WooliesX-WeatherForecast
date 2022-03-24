@@ -46,8 +46,13 @@ stages:
           - script: |
               docker tag dfranciswoolies/ciarecruitment-bestapiever:${{ parameters.imageTag }} australia-southeast1-docker.pkg.dev/wooliesx-interview/wooliesx-interview-repo/weather-forecast-api:${{ parameters.imageTag }}
             displayName: Tag downloaded image to prepare for GAR
+          - task: DownloadSecureFile@1
+            name: pipelineAccessKey
+            displayName: 'Download Pipeline GAR service account access key'
+            inputs:
+              secureFile: 'wooliesx-interview-pipeline-gar.json'
           - script: |
-              docker login -u _json_key --password-stdin https://australia-southeast1-docker.pkg.dev < wooliesx-interview-pipeline-gar.json
+              docker login -u _json_key --password-stdin https://australia-southeast1-docker.pkg.dev < $(pipelineAccessKey.secureFilePath)
             displayName: Login to GAR
 
   # - stage: APPLY_AND_PROVISION
