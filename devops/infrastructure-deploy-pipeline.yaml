@@ -49,7 +49,7 @@ stages:
               providerGoogleRegion: australia-southeast1
               publishPlanResults: Terraform Plan
               commandOptions: -out $(System.DefaultWorkingDirectory)/terraform.tfplan -detailed-exitcode
-          - script: echo "##vso[task.setvariable variable=terraformChangesStaged;isOutput=true]$(TERRAFORM_PLAN_HAS_CHANGES)"
+          - script: echo "##vso[task.setvariable variable=terraformChangesStaged;isOutput=true]'$(TERRAFORM_PLAN_HAS_CHANGES)'"
             displayName: Set state change variable
             name: printvar
 
