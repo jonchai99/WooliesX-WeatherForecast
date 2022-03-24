@@ -54,6 +54,9 @@ stages:
           - script: |
               docker login -u _json_key --password-stdin https://australia-southeast1-docker.pkg.dev < $(pipelineAccessKey.secureFilePath)
             displayName: Login to GAR
+          - script: |
+              docker push australia-southeast1-docker.pkg.dev/wooliesx-interview/wooliesx-interview-repo/weather-forecast-api:${{ parameters.imageTag }}
+            displayName: Push image to GAR
 
   # - stage: APPLY_AND_PROVISION
   #   displayName: Run Terraform Apply and provision resources
