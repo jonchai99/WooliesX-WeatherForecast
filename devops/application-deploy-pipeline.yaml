@@ -39,7 +39,7 @@ stages:
     displayName: Obtain image from source and publish
     jobs:
       - job: PUBLISH_IMAGE
-        display: Publish image to GAR
+        displayName: Publish image to GAR
         steps:
           - script: docker pull dfranciswoolies/ciarecruitment-bestapiever:${{ parameters.imageTag }}
 
