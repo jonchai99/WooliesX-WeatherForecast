@@ -42,6 +42,13 @@ stages:
         displayName: Publish image to GAR
         steps:
           - script: docker pull dfranciswoolies/ciarecruitment-bestapiever:${{ parameters.imageTag }}
+            displayName: Download image from Docker Hub
+          - script: |
+              docker tag dfranciswoolies/ciarecruitment-bestapiever:${{ parameters.imageTag }} australia-southeast1-docker.pkg.dev/wooliesx-interview/wooliesx-interview-repo/weather-forecast-api:${{ parameters.imageTag }}
+            displayName: Tag downloaded image to prepare for GAR
+          - script: |
+              docker login -u _json_key --password-stdin https://australia-southeast1-docker.pkg.dev < wooliesx-interview-pipeline-gar.json
+            displayName: Login to GAR
 
   # - stage: APPLY_AND_PROVISION
   #   displayName: Run Terraform Apply and provision resources
