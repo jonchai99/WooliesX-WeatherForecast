@@ -117,8 +117,8 @@ stages:
               try
               {
                 Write-Host "Sending request to $env:CLOUD_RUN_URL/health"
-                $Response = Invoke-WebRequest -Method Get -Uri "$env:CLOUD_RUN_URL/health"
-                Write-Host "Health check status is $Response"
+                $StatusCode = Invoke-WebRequest -Method Get -Uri "$env:CLOUD_RUN_URL/health" | Select-Object -Expand StatusCode
+                Write-Host "Health check status is $StatusCode"
 
                 if ($Response -ne 'Healthy') {
                   Write-Host "Health check failed. Exiting..."
