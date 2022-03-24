@@ -110,7 +110,7 @@ stages:
             inputs:
               command: output
               workingDirectory: $(workingDirectory)
-          - script: echo "##vso[task.setvariable variable=cloudRunUrl]$(TF_OUT_service_url)"
+          - script: echo ##vso[task.setvariable variable=cloudRunUrl]$(TF_OUT_service_url)
             displayName: Set Cloud Run public URL
             name: setvar
           - powershell: |
@@ -125,5 +125,5 @@ stages:
                 exit 1
               }
             env:
-              CLOUD_RUN_URL: $(cloudRunUrl).replace('"', '')
+              CLOUD_RUN_URL: $(cloudRunUrl)
             displayName: Perform health check
