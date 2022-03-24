@@ -89,19 +89,18 @@ stages:
             inputs:
               workingDirectory: $(workingDirectory)
               command: workspace
-              workspaceSubCommand: select
-              workspaceName: $(environment)              
-          - powershell: Add-Content "$(Build.SourcesDirectory)/application/services/terraform-$(environment).tfvars" "`ncloud_run_image_tag = `"${{ parameters.imageTag }}`""
-            displayName: Update image tag
-          - task: TerraformCLI@0
-            displayName: Run Terraform Apply
-            inputs:
-              command: apply
-              workingDirectory: $(workingDirectory)
-              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-              providerGoogleCredentials: wooliesx-interview-tf.json
-              # The default project name where resources are managed. Defining project on a resource takes precedence over this.
-              providerGoogleProject: wooliesx-interview
-              # The default region where resources are managed. Defining region on a resource takes precedence over this.
-              providerGoogleRegion: australia-southeast1
-              commandOptions: "-auto-approve -var-file=./services/terraform-$(environment).tfvars"
+              workspaceSubCommand: list
+          # - powershell: Add-Content "$(Build.SourcesDirectory)/application/services/terraform-$(environment).tfvars" "`ncloud_run_image_tag = `"${{ parameters.imageTag }}`""
+          #   displayName: Update image tag
+          # - task: TerraformCLI@0
+          #   displayName: Run Terraform Apply
+          #   inputs:
+          #     command: apply
+          #     workingDirectory: $(workingDirectory)
+          #     # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+          #     providerGoogleCredentials: wooliesx-interview-tf.json
+          #     # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+          #     providerGoogleProject: wooliesx-interview
+          #     # The default region where resources are managed. Defining region on a resource takes precedence over this.
+          #     providerGoogleRegion: australia-southeast1
+          #     commandOptions: "-auto-approve -var-file=./services/terraform-$(environment).tfvars"
