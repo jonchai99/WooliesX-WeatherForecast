@@ -37,6 +37,7 @@ stages:
               # GCS Bucket path to state file
               backendGcsPrefix: terraform/state
           - task: TerraformCLI@0
+            name: plan
             displayName: Run Terraform Plan
             inputs:
               command: plan
@@ -55,7 +56,7 @@ stages:
 
   - stage: APPLY_AND_PROVISION
     displayName: Run Terraform Apply and provision resources
-    condition: and(succeeded(), eq(dependencies.PLAN_AND_PUBLISH.outputs['TERRAFORM_PLAN.terraformChangesStaged'], 'true'))
+    condition: and(succeeded(), eq(dependencies.PLAN_AND_PUBLISH.outputs['TERRAFORM_PLAN.plan.terraformChangesStaged'], 'true'))
     dependsOn: PLAN_AND_PUBLISH
     jobs:
       - job: TERRAFORM_APPLY
