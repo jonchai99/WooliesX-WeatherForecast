@@ -48,10 +48,14 @@ stages:
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: australia-southeast1
               publishPlanResults: Terraform Plan
-              commandOptions: -out $(System.DefaultWorkingDirectory)/terraform.tfplan -detailed-exitcode
+              commandOptions: -out $(Build.ArtifactStagingDirectory)/terraform.tfplan -detailed-exitcode
           - script: echo "##vso[task.setvariable variable=terraformChangesStaged;isOutput=true]'$(TERRAFORM_PLAN_HAS_CHANGES)'"
             displayName: Set state change variable
             name: printvar
+          - publish: '$(Build.ArtifactStagingDirectory)/terraform.tfplan'
+            displayName: 'Publish tfplan file for later use'
+            artifact: drop
+
 
   - stage: APPLY_AND_PROVISION
     displayName: Run Terraform Apply and provision resources
@@ -61,6 +65,8 @@ stages:
       - job: TERRAFORM_APPLY
         displayName: Apply Terraform resources
         steps:
+          - download: current
+            artifact: drop
           - task: TerraformInstaller@0
             displayName: Install latest Terraform version
             inputs:
@@ -88,4 +94,4 @@ stages:
               providerGoogleProject: wooliesx-interview
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: australia-southeast1
-              commandOptions: "$(System.DefaultWorkingDirectory)/terraform.tfplan"
+              commandOptions: "$(Pipeline.Workspace)/drop/terraform.tfplan"
