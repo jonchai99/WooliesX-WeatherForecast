@@ -118,6 +118,7 @@ stages:
               {
                 Write-Host "Sending request to $env:CLOUD_RUN_URL/health"
                 $Response = Invoke-WebRequest -Method Get -Uri "$env:CLOUD_RUN_URL/health"
+                Write-Host "Status code: $Response.StatusCode"
               }
               catch
               {
