@@ -1,5 +1,5 @@
 resource "google_cloud_run_service" "cloud_run" {
-  name     = local.cloud_run_service_name
+  name     = "${local.cloud_run_service_name}-${var.environment}"
   location = var.gcp_region
 
   template {

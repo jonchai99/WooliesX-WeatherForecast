@@ -33,3 +33,8 @@ variable "cloud_run_api_key_secret" {
   description = "Secret ID of Cloud Run application stored in Secret Manager"
   type        = string
 }
+
+variable "environment" {
+  description = "Environment of the application"
+  type        = string
+}
