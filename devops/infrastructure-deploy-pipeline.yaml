@@ -47,7 +47,7 @@ stages:
               # The default region where resources are managed. Defining region on a resource takes precedence over this.
               providerGoogleRegion: australia-southeast1
               publishPlanResults: Terraform Plan
-              commandOptions: -out="$(System.DefaultWorkingDirectory)/terraform.tfplan" -detailed-exitcode
+              commandOptions: "-out $(System.DefaultWorkingDirectory)/terraform.tfplan -detailed-exitcode"
           - script: echo "##vso[task.setvariable variable=terraformChangesStaged;isOutput=true]true"
             displayName: Set state change variable
             name: printvar
