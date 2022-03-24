@@ -38,13 +38,3 @@ variable "environment" {
   description = "Environment of the application"
   type        = string
 }
-
-variable "gcs_state_directory" {
-  description = "The directory where state will be stored"
-  type        = string
-}
-
-variable "gcs_state_bucket" {
-  description = "The name of the Google Cloud Storage bucket"
-  type        = string
-}

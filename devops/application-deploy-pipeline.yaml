@@ -35,7 +35,7 @@ pool:
   name: Default
 
 stages:
-  - stage: DOWNLOAD_AND_PUBLISH
+  - stage: DOWNLOAD_AND_PUSH
     displayName: Obtain image from source and publish
     jobs:
       - job: PUBLISH_IMAGE
@@ -58,40 +58,42 @@ stages:
               docker push australia-southeast1-docker.pkg.dev/wooliesx-interview/wooliesx-interview-repo/weather-forecast-api:${{ parameters.imageTag }}
             displayName: Push image to GAR
 
-  # - stage: APPLY_AND_PROVISION
-  #   displayName: Run Terraform Apply and provision resources
-  #   dependsOn: DOWNLOAD_AND_PUBLISH
-  #   jobs:
-  #     - job: TERRAFORM_APPLY
-  #       displayName: Apply Terraform resources
-  #       steps:
-  #         - download: current
-  #           artifact: drop
-  #         - task: TerraformInstaller@0
-  #           displayName: Install latest Terraform version
-  #           inputs:
-  #             terraformVersion: latest
-  #         - task: TerraformCLI@0
-  #           displayName: Run Terraform Init
-  #           inputs:
-  #             command: init
-  #             workingDirectory: $(workingDirectory)
-  #             backendType: gcs
-  #             # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-  #             backendGcsCredentials: wooliesx-interview-tf-state.json
-  #             # GCS bucket name
-  #             backendGcsBucket: $(backendGcsBucket)
-  #             # GCS Bucket path to state file
-  #             backendGcsPrefix: $(backendGcsPrefix)
-  #         - task: TerraformCLI@0
-  #           displayName: Run Terraform Apply
-  #           inputs:
-  #             command: apply
-  #             workingDirectory: $(workingDirectory)
-  #             # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
-  #             providerGoogleCredentials: wooliesx-interview-tf.json
-  #             # The default project name where resources are managed. Defining project on a resource takes precedence over this.
-  #             providerGoogleProject: wooliesx-interview
-  #             # The default region where resources are managed. Defining region on a resource takes precedence over this.
-  #             providerGoogleRegion: australia-southeast1
-  #             commandOptions: "-auto-approve"
+  - stage: DEPLOY_ENV_DEV
+    displayName: Run Terraform Apply and provision resources
+    dependsOn: DOWNLOAD_AND_PUSH
+    jobs:
+      - job: TERRAFORM_APPLY
+        variables:
+          - name: environment
+            value: dev
+        displayName: Apply Terraform resources
+        steps:
+          - task: TerraformInstaller@0
+            displayName: Install latest Terraform version
+            inputs:
+              terraformVersion: latest
+          - task: TerraformCLI@0
+            displayName: Run Terraform Init
+            inputs:
+              command: init
+              workingDirectory: $(workingDirectory)
+              backendType: gcs
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+              backendGcsCredentials: wooliesx-interview-tf-state.json
+              # GCS bucket name
+              backendGcsBucket: $(backendGcsBucket)
+              # GCS Bucket path to state file
+              backendGcsPrefix: $(backendGcsPrefix)/$(environment)
+          - pwsh: Add-Content "./services/terraform-dev.tfvars" "`ncloud_run_image_tag = `"${{ parameters.imageTag }}`""
+          - task: TerraformCLI@0
+            displayName: Run Terraform Apply
+            inputs:
+              command: apply
+              workingDirectory: $(workingDirectory)
+              # Google Credentials (i.e. for service account) in JSON file format in Azure DevOps Secure Files
+              providerGoogleCredentials: wooliesx-interview-tf.json
+              # The default project name where resources are managed. Defining project on a resource takes precedence over this.
+              providerGoogleProject: wooliesx-interview
+              # The default region where resources are managed. Defining region on a resource takes precedence over this.
+              providerGoogleRegion: australia-southeast1
+              commandOptions: "-auto-approve"
